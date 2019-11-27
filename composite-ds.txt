@@ -1,0 +1,502 @@
+void print_inOrder ( node *root )
+{
+    // L.C.R
+
+    if ( root == null ) return ;
+
+    print_inOrder ( root->left );
+    cout << "root->data" );
+    
+    print_inOrder ( root->right );
+
+    return;
+}
+
+print_postOrder ( node *root )
+{
+     if ( root == null ) return;
+
+     // L, R, C
+     print_postOrder ( root->left );
+     print_postOrder ( root->right );
+
+cout << "root->data" << "\n";
+    return;
+     
+}
+
+print_preOrder ( node *root )
+{
+     if ( root == null ) return;
+   // C, L, R
+      cout << "root->data " << "\n";
+      print_preOrder ( root->left );
+      print_preOrder ( root->right );
+}
+
+
+void collect ( int d, node* n, unordered_map<int, vector<node*>> & nc )
+{
+     unordered_map<int, node*>::iterator iter = nc.find ( d );
+     if ( iter == nc.end() )
+     {
+          vector<node*> vec;
+          vec.push_back( n );
+          nc[d] = vec;     
+     }
+     else
+     {
+          vector<node*>& ref = iter->second;
+          ref.push_back( n );
+      }
+      return;
+}
+
+void print ( const unordered_map<int, vector<node*>& nc )
+{
+       stringstream str; 
+       vector<node*>& each_dist;
+       int i =  0;
+
+       for ( item : nc )
+       {
+       while ( i < each_dist.size() )
+             str << each_dist.at(i++) << " "
+
+       str << "\n"
+
+       }
+       cout << str.str();
+}
+
+void vertical_traversal ( node * root, unordered_map<int, vector<node*> >& nc ) 
+{
+      // for each node -- compute distance from level =0 ( root)
+      // assign value -- left = hd - 1 ; right = hd + 1;
+
+      Queue<pair<int, node*> > q;
+      int distance =0;
+      q.push ( pair<int, node*>( distance, root ));
+      
+//      unordered_map<int, vector<node*> > nc;
+
+      while ( q.empty )
+      {
+              pair<int, node *> top = q.front();
+              if ( top->left )
+              {
+                    pair<int, node*> l( top.first - 1, top->left);
+                    q.push ( l );
+                    collect ( top.first - 1, top->left, nc );
+              }
+               if ( top->right )
+               {
+                    pair<int, node*> r( top.first + 1, top->left);
+                    q.push ( r );
+                    collect ( top.first + 1, top->left, nc );
+               }
+               q.pop();
+      }
+            // traversed the tree and collected nodes
+
+     // print ( nc );
+}
+
+void topview ( node * root )
+{
+     if ( root == null ) cout << "nothing to print for tree , root is (nil) \n" ; return;
+
+    unordered_map<int, vector<node*> > nc;
+
+    vertical_traversal ( node, nc );
+    // top view.. prints first element captured in vertical traversal.
+
+    unordered_map<int, vector<node*> >::iterator iter = nc.begin();
+    while ( iter != nc.end() )
+    {
+        vector<node*>& ref = iter->second;
+        cout << ref.at(0) << " ";   
+        ++iter;
+    }
+    cout << "\n";
+    return;
+}
+
+void bottomview ( node * root )
+{
+    if ( root == null ) cout << "nothing to print for tree, root is (nil) \n"; return;
+
+    unordered_map<int, vector<node*> > nc;
+    vertical_traversal ( node, nc );
+
+     // bottom view, print the last element captured in each vertical traversal.
+
+    unordered_map<int, vector<node *> >::iterator iter = nc.begin();
+    while ( iter != nc.end()  )
+    {
+         vector<node*>& ref = iter->second;
+         if ( ref.size() )
+             cout << ref.at( ref.size() - 1 ) ) << " ";
+
+         ++iter;
+    }
+    cout << "\n";
+    return;
+}
+
+void rs_view ( node * root )
+{
+    unordered_map<int, node*> coll;
+    rs_side_view_impl ( root, coll, 0 );
+    std::for_each( coll.begin, coll.end, [](unordered_map::value_type& ref ) {
+                   cout << (ref.second)? ref.second->data : " " << "\t"; } );
+
+    cout << "\n";
+    return;           
+}
+
+void rs_side_view_impl ( node *root, unordered_map<int, node*>& coll, int l )
+{
+    if ( root == null ) return;
+
+    if ( coll.find(l) == coll.end() )
+        coll[l] = root;
+
+    if ( root->right ) rs_side_view_impl  ( root->right, coll, l + 1 );
+    else ( root->left ) rs_side_view_impl  ( root->left, coll, l + 1 );
+}
+
+void ls_view ( node *root )
+{
+     unordered_map<int, node*> coll;
+     left_side_view_impl ( root, coll, 0 );
+     return;
+}
+
+
+void left_side_view_impl ( node *root, unordered_map<int, node*>& col, int l )
+{
+     if ( root == null ) 
+          return;
+
+     if ( col.find(l) == col.end() )
+         col[l] = node;
+
+     if ( root->left) 
+            left_side_view_impl  ( root->left, col, l + 1 );
+     else if ( root->right ) 
+            left_side_view_impl ( root->right, col, l + 1 );
+  
+     return; 
+}
+
+bool nodesPresent ( node *root, node* & p1 node* & q1 ) // or pass in pointer to pointer.
+{
+     if ( root == null ) return false;
+
+     if ( root == p ) {
+          p = null;
+          if ( q == null )
+               return true;
+     }
+     if ( root == q ) {
+          q = null;
+           if ( p == null )
+              return true;
+     }
+
+     return ( nodesPresent(root->left, p, q ) && nodesPresent( root->right, p, q ))  ;
+}
+
+node *lca ( node *root, node *p, node *q )
+{
+    if ( root == null ) return null;
+
+      node *p1 = p;
+      node *q1 = q;
+      if ( nodesPresent( root, p1, q1 ) == false ) return null;
+
+      // nodes are existent..
+      return ( lca_impl ( root->left, p, q ) || lca_impl ( root->right, p, q ) );
+}
+
+node *lca_impl ( node *root, node * & p, node * & q )
+{     
+     if ( root == null ) return null;
+
+     if ( ( root == p ) || ( root == q ) ) return root;  
+    
+     node *lca_left = lca_impl ( root->left, p, q );     
+     node *lca_right == lca_impl ( root->right, p, q );
+     ( lca_left && lca_right ) ? return lca_left : (lca_left) ? return lca_left : return lca_right; 
+
+}
+
+class LCA
+{
+       node* n1;
+        node *n2;
+        bool isNodesExistent() { return true; } // to implement as validity
+        bool IsLeft ( node * root );
+        bool IsRight ( node * root );
+     public:
+        LCA ( node* p, node *q ) : n1(p), n2(q) {}
+        node* operator()( node* root ); // functor that actually does the work of finding LCA for a given root of tree !
+};
+
+node * lca_iterative ( node * root, node *p, node *q )
+{
+     // assume nodes are existent !!
+
+      if ( root == null ) return null;
+
+      
+       node *parent = root;
+       node *root_orig = root;
+       
+       queue<node*> orderOfFind;
+ // is lca on left?
+       while ( root->left != null ) 
+       {
+            if ( root == p ) orderOfFind.push( parent );
+            if ( root == q ) orderOfFind.push( parent );
+            
+            if ( orderOfFind.size() == 2 )
+               return orderOfFind.front();
+                    
+            parent = root;
+            root = root->left;
+       }
+
+             // not found on left -- try right.
+
+       root = root_Orig;        
+        while ( root != null )
+        {
+            if ( root == p ) orderOfFind.push( parent );
+            if ( root == q ) orderOfFind.push( parent );
+            
+            if ( orderOfFind.size() == 2 )
+               return orderOfFind.front();
+                    
+            parent = root;
+            root = root->right;
+        }
+       
+        if ( orderOffFind.push.size() == 2 ) return root_orig;
+
+        return null;
+}
+
+
+int fib ( int n, unordered_map<int, int>& cache )
+{
+     if ( ( n == 0 ) || ( n == 1 ) ) return 1;
+
+     if ( cache.find(n) != cache.end() ) return cache[n];
+
+     cache[n] = fib ( n - 1 ) + fib ( n - 2 );
+     return cache[n];
+}
+
+
+int fin_nonrecur ( int n )
+{
+    unordered_map<int, int> cache;
+    cache[0] = 1;
+    cache[1] = 1;
+
+    for ( int i = 2; i <= n; ++i )
+    {
+        cache[i] = cache[i-1] + cache[i-2];    
+    }
+    
+    return cache[n];   
+}
+
+
+
+
+int getmin( node * root )
+{ 
+    if ( ( root == NULL )  return INT_MIN;
+
+    while ( root->left != null ) root = root->left;
+
+    return root->data;
+}
+
+int getmax( node * root )
+{
+    if ( root == null ) return INT_MAX;
+    while ( root->right != null ) root = root->right;
+
+    return root->data;
+}
+
+bool isBST ( node * root )
+{
+     if ( root == null  ) return true;
+     
+     if  ( (root->data < getmin(root)) || (root->data > getmax( root ) ) )
+            return false;
+
+    return ( isBST_impl ( root->left, getmin(), root->data ) && 
+             isBST_impl ( root->right, root->data, getmax() ) );
+}
+
+
+bool isBST_impl ( node * root, int min, int max )
+{
+     if ( root == null ) return true;
+
+     if ( (root->data < min) || (root->data > max ) ) return false;
+  
+     if ( (root->left ) && (root->data < root->left->data ) ) || 
+          (( root->right) && (root->data > root->right->data ) ) ) return false;
+
+
+     return ( isBST_impl( root->left, min, root->data ) && 
+              isBST_impl ( root->right, root->data, max ) );         
+}
+ 
+int getHeight ( node *root )
+{
+    if ( root == null ) return 0;
+    int lH = getHeight ( root->left );
+    int rH = getHeight ( root->right );
+
+    return  ( std::numeric_limits<int>::max( lH, rH) + 1 );
+}
+
+
+int minDepth ( node *root )
+{
+     if ( root == null ) return null;
+
+     int lD = 0;
+     int rD = 0;
+     if ( root->left )
+        lD = minDepth(root->left );
+     if ( root->right )
+         rD = minDepth  ( root->right );
+
+     return ( min ( lD, rD ) + 1 );
+}
+
+int maxPathSum ( node *root )
+{
+  int maxSum = 0;
+    int l_path = maxPathSumImpl ( root->left, maxSum );
+    int r_path = maxPathSumImpl ( root->right, maxSum );
+
+    // potential : 
+
+     if ( root->data + l_path + r_path > maxSum )
+        maxSum = root->data + l_path + r_path;
+     if ( root->data + l_path > maxSum )
+        maxSum = root->data + l_path;
+     if ( root->data + r_path > maxSum )
+        maxSum  = root->data + r_path;
+
+    return maxSum;
+}
+
+int maxPathSumImpl (node* root, int& maxSum )
+{
+    if ( root == null ) return 0;
+
+    int l_maxSum = maxPathSumImpl(root->left, maxSum);       
+    int r_maxSum = maxPathSumImpl ( root->right, maxSum );
+
+    // L + C, or R + C -- ongoing..
+   // L + C + R itself a subtree.
+
+    if ( (l_maxSum + r_maxSum + root->data ) > maxSum )
+        maxSum = l + r + root->data;
+
+    if ( max(l_maxSum, r_maxSum) + root->data  > maxSum )
+          maxSum = max(l, r) + root->data;
+
+    return ( max(l,r) + root->data) ;    
+}
+
+
+void preOrder ( node *root )
+{
+     if ( root == null ) return;
+     cout << root->data;
+     preOrder ( node->left );
+     preOrder ( node->right );
+};
+
+
+
+
+bounded by CLR () -- vector<int> [ 0: C - 1: L, 2: R]
+
+bool verifyArray ( int arr[], size_t sz )
+{
+    return isArrayPreOrder ( arr, 0, sz - 1 );
+}
+
+bool isArrayPreOrder ( int arr[],  int start, int end )
+{
+     // pre-order, C, L, R
+     // [ 2, 4, 3 ] --  // [ 2, 4, 1 ]	 arr[0] -- is always root ( center ) -- bound for right	
+
+    // [ 40, 30 35, 80, 10, 100 }
+
+  //      40
+    // 30       80
+  // 10      35	  100
+
+    if ( start > end ) return true;
+    if ( arr[start] == arr[start + 1] ) return false;
+   
+    if ( (arr[start] < arr[start + 1] ) && (arr[start] > arr[start + 2] )  return false; // ideal CLR failed.
+	
+    if ( (arr[start] > arr[start+1] ) && (arr[start+2] > arr[start] )
+         return isArrayPreOrder ( arr, start + 3, end );
+         
+    return  isArrayPreOrder ( arr, start + 1, end )
+}
+
+bool isFullBinary ( node * root )
+{
+      if ( root == null ) return true;
+      if ( (root->left == NULL ) && ( root->right == NULL ) return true;
+
+      if ( (root->left) && ( root->right == NULL ) ) return false;
+      if ( (root->right) && ( root->left == NULL ) ) return false;
+
+      return ( isFullBinary ( root->left ) && isFullBinary ( root->right ) );
+}
+
+node *removeNodes ( nodes *root, int lenPath )
+{
+    int currPath = 1;
+    return  removeNodes_impl ( root, lenPath, currPath ); 
+}
+
+node *removeNodes_impl ( node *root, int lenPath, int& currPath )
+{
+     if ( (root == null ) || ( currPath >= lenPath ) ) return root;
+
+     if ( ((root->left == NULL ) && (currPath < lenPath )) || 
+          (( root->right == NULL)) && ( currPath <lenPath)) )
+      {
+           return NULL;
+      }
+
+     root->left = removeNodes_impl (root->left, lenPath, currPath + 1 );
+     root->right = removeNodes_impl ( root->right, lenPath, currPath + 1 );
+
+    return root;
+}
+ 
+void reverseNodes ( node *root )
+{
+    if ( root == null ) return null;
+
+}

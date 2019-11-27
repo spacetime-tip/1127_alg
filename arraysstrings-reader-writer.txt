@@ -1,0 +1,306 @@
+int findCountOfTriplets ( int arr[], size_t sz, int sVal ) 
+{
+    int count = 0;
+
+    for ( int k = 0; k < sz - 2; ++k)
+    {
+       for ( int j = 0; j < sz - 1; ++j )
+       {
+          if ( arr[k] + arr[j] + arr[j+1] < sVal )
+                     ++count;
+       }
+    }
+    return count;
+}
+
+bool isAlpha ( char c )
+{
+    if ( ((c >= 'a') && ( c <= 'z')) ||
+         ( ( c >= 'A') && ( c <= 'Z')) )
+        return true;
+
+    return false;
+}
+
+void reverseArray( string& str ) // char arr[]
+{
+      int end = str.length();
+      int begin = str.at(0);
+
+      while ( begin < end )
+      {
+         while ( !str[begin].isalpha() ) ++begin;
+         while ( !str[end].isalpha() ) --end;
+
+         if ( begin < end )
+         {
+             char tmp = str[begin];
+             str[begin++]=str[end];
+             str[end--] = tmp;   
+         }
+      }
+      return;
+}
+
+bool isPalindrome( const string& str )
+{
+     int begin = 0;
+     int end = str.length();
+     while ( begin < end )
+       if ( s[begin++] != s[end--] ) return false;
+
+     return true;
+}
+
+void getPPartitions ( string& str )
+{    
+     if ( str.length() < 2 ) return;
+
+     if ( str.length() == 2 )  {
+
+             if (isPalindrome(str)
+             {
+               print (str);
+             }
+             return result ;
+    }
+
+    // palindromic partitions..
+    // eg: cabac --- 
+    // jcabac ; jkkkkkcabac
+    // jkkkcabacppqqq; cabacrq; qqqppcabacppqqq;
+
+     if ( isPalindrome(str) ) print(str);
+
+     getPPartions ( str.substr(1, str.length() );
+     getPPartitions ( str.substr(0, str.length() - 1 );   
+
+     return;
+}
+
+vector<vector<int> > generateSortedArrays ( int a[], size_t a_len, int b[], size_t b_len )
+{
+     vector<vector<int> > result;
+     
+     generateArray ( i, a, a_len, 0, b, b_len, result);
+     
+     return result;
+}
+
+void generateArray ( int a1, int a[], int a_len, int bI, int b[], int b_len, vector<vector<int>& result )
+{
+     generateArray_impl ( a1, a, a_len, bI, b_len, result );
+}
+
+vector<int> generateArray_impl ( int aI, int a[], int a_len, int bI, int b[], int b_len, vector<vector<int>& result )
+{  
+     if ( ( a1 >= a_len ) || (bI >= b_len )) return;
+
+     while ( ( bI < b_len) && b[bI] < a[ai] ) ++bI;
+     
+     vector<int> res; 
+     if ( bI != b_len )
+     { 
+           res.push_back ( a[aI] );
+           res.push_back ( b[bI] );
+           result.push_back ( res );
+     }
+                   
+     while ( ( aI < a_len) && ( a[aI] < b[bI] )) ++aI;
+     vector<int> more_result = generateArray_impl ( aI, a, a_len, ++bI, b, b_len );
+     res.insert (res.end(), more_result.begin(), more_result.end();
+     result.push_back ( res );
+
+     return res;
+}
+
+// 2 --- ( i + 1th - ith == 1 ) // contiguous. or ( ith - i+1th == 1 ) contiguous.
+
+int findLength ( const vector<int>& arr )94 
+{
+   if ( arr.size() == 0 ) return 0;
+
+    sort ( arr.begin(), arr.end() ); // O(N2)
+    int largest = 0;
+
+    int k = 0;
+ 
+   
+
+
+    while  ( k < arr.size() - 1)
+    {
+       int subLength = 0;
+       while ( (k < arr.size() - 1 ) && (abs(arr[k] -  arr[k+1]) == 1 ) { ++subLength;++k }
+       if ( subLength > largest ) largest = subLength;
+    }
+    return largest;
+}
+
+
+{ 1, 1, 3, 4 } -- 
+
+// 
+
+multiple readers and single writer 
+
+class ReaderWriterQ
+{
+     queue<int> Q;  // assuming an unbounded Q.
+     atomic<int> write; // if 1 that means write is going on.
+     atomic<int> readers;
+     std::condition_variable cv;
+     std::mutex m;
+
+
+     private:
+     bool getReadLock()
+     {
+        std::unique_lock<std::mutex> lk(m);
+        cv.wait ( lk, [] { return (write == 0); } ) ;  // infinite wait.. .. based on application.. can also use wait_unitl    
+         // to accomodate wait_until.. return code of this get..will be boolean
+         // at this juncture. this is under mutex lock of control.
+         
+        ++readers;  
+        lk.unlock();
+        cv.notifyAll();
+         return true;
+     }
+
+     bool getWriteLock()
+     {
+        std::unique_lock<std::mutex> lk(m);
+        cv.wait ( lk, [] { return ( readers == 0 ); } );
+            // have lock for writer.
+
+         write = 1;  // writing...
+        lk.unlock(m);
+       cv.notifyAll();
+         return true;
+     }
+
+     bool upgradeToWriter()
+     {
+            // reader currently.
+          std::unique_lock<std::mutex> lk(m);
+        cv.wait ( lk, [] { return ( readers == 1 ); } );
+
+        write = 1;
+        --readers;
+
+       lk.unlock(m);
+       cv.notifyAll();
+       return true;
+     }
+
+     bool releaseWriter()
+     {
+         write = 0; // this is atomic.
+         cv.notifyAll();
+         return true;
+     }
+
+     bool releaseReader()
+     {
+          --readers; // atomic.
+         cv.notifyAll();
+         return true
+     }
+
+     public:
+        bool getNext(T& ref )
+        { 
+            bool rc = true;
+            if ( Q.size() == 0 ) 
+               return !rc; 
+           else if ( (rc = acquireReader()) ) 
+           { 
+              ref = Q.front(); 
+              if ( (rc = upgradeToWriter()) )
+              {
+                  Q.pop_front();
+                  releaseWriter();
+              }
+          }
+          return rc;
+      }     
+
+       bool add ( T& ref )
+       {
+           bool rc = true;
+           // if its a bounded queuue.. error if Q full !
+
+           if ( ( rc = acquireWriter() ) )
+           {
+                Q.push_back ( ref );
+           }
+           return rc;
+       }             
+};
+
++++++++++++++++++++++++++++
+
+int findMaxProfit ( int arr[], size_t arr_len )
+{
+     int max_profit = numeric_limits::min();
+
+     int k=0;
+     while ( k < arr_len ) 
+     {
+     while ( (k < arr_len ) && ( arr[0] <= arr[k++] )) ;
+
+     if ( k == arr_len ) return max(max_profit, 0); // no profits made or previous max-profit collected 
+
+     if ( max_profit < arr[k-1] ) max_profit = arr[k - 1];
+     }
+     return max_profit;     
+}
+
+int findMaxProfit_r ( int arr[], int begin, int end, int& maxProfit )
+{
+     if ( begin > end ) return 0;
+
+     while ( (begin < end ) && arr[begin] <= arr[begin++) );
+     if ( begin >= end ) return 0;
+
+     
+     if ( maxProfit < arr[begin - 1] )
+          maxProfit = arr[begin - 1];
+
+     return ( findMaxProfit_r( arr, begin, end, maxProfit ) );
+}
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
