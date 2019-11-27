@@ -1,0 +1,114 @@
+find rectangle with biggest sum: -- precompute.
+
+
+int arr[][];
+n * m -- matrix --
+
+1 cell to full n * m; [ 4 * 3 ]
+
+(i,j), ( i + n, j + m )
+i = 0 ; I can form 'm' rectangles...
+i = 1;  i can form ( repeat sum of all rows < i ) + 'm - rectangles '
+
+
+map<pair<i,j> sum>
+
+where pair<i.j> is bounded by [ 0-i as row and 0-j as col ]
+
+int max-sum = 0;
+int getmaxsum ( int arr[][], int row, int col, map<pair<int,int> >& sum )
+{
+    for ( int i < 0; i < row; ++i )
+    {
+       for ( int j = 0; j < nCols; ++j )
+       {
+          int tmp = computeSum ( arr, i, j, sum );
+
+          if ( maxsum ) < tmp
+               maxSum = tmp;
+       }
+    }
+}
+
+// <i, j> ending co-ordinate. and with <0,0> being the always begin..
+// 
+int computesum_impl ( int arr[][], int i, int j, map<pair<int,int> >& sum )
+{
+    if ( (i < 0 )  || ( j < 0 ) ) return 0;
+    if ( i >= nRows ) || ( i >= nCols ) ) return 0;
+
+    pair<int, int> coord(i, j );
+    map<pair<int, int> >::const_iteratoriter = sum.find ( coord );
+
+    if ( iter != sum.end() )
+    {
+         return iter->second;
+    }
+       // sum ending t this (x, y) -- would be computed sum of rectangle of (row -1 ) + rectangle of col -1
+         // + rectangle ( or square ) ending at ( i -1, j -1 ) and this current cell.
+     sum[coord] = computeSum_impl ( arr, i -1, j ) + 
+                  computeSum_impl ( arr, i, j - 1 ) + 
+                  computeSum_impl ( arr, i -1, j -1 ) + 
+                  arr[i][j]; //
+    
+    return sum[coord];
+}
+
+struct  submatrix
+{
+    pair<int, int> begin_coordinate;
+    pair<int, int> end_coordinate;
+
+    public:
+
+    bool operator()( const submatrix& lhs, const submatrix& rhs )
+    {
+        return ( (lhs.begin_coordinate == rhs.begin_coordinate ) && 
+                  ( lhs.end_coordinate == rhs.end_coordinate ) );
+    }
+   
+};
+
+int compute_max ( int arr[][] )
+{
+    map<sub_matrix, int > sums; // starting of that rectangle is now for begining 
+    for ( int i = 0 ; i< rows, ++i )
+     for ( int j = 0 ; j < cols; ++j )
+    {
+       computesum_impl2 ( arr, i,  j, rows, cols, sums ); // this has begin and end coordinate.
+    }
+
+    int maxsum = 0;
+    for_each ( sums.begin(), sums.end(), []( const map::value_type& ref ){
+                            if ( maxsum < ref ) 
+                                maxsum=ref;} );
+    
+    return maxsum;
+}
+
+int computesum_impl2 ( int arr[][], int i, int row_begin, int j, int col_begin, 
+                       map<submatrix, int >& sums ) // pair<int,int> >& sum )
+{
+    if ( (i < row_begin )  || ( j < col_begin ) ) return 0;
+    if ( i >= nRows ) || ( i >= nCols ) ) return 0;
+
+//    pair<int, int> coord(i, j );
+     submatrix coord(row_begin, col_begin, i, j);
+     
+//     map<pair<int, int> >::const_iteratoriter = sum.find ( coord );
+      
+     map<submatrix,int>::const_iterator iter = sums.find(coord );
+
+    if ( iter != sum.end() )
+    {
+         return iter->second;
+    }
+       // sum ending t this (x, y) -- would be computed sum of rectangle of (row -1 ) + rectangle of col -1
+         // + rectangle ( or square ) ending at ( i -1, j -1 ) and this current cell.
+     sum[coord] = computeSum_impl ( arr, i -1, row_begin, j, col_begin ) + 
+                  computeSum_impl ( arr, i, row_begin, j - 1, col_begin ) + 
+                  computeSum_impl ( arr, i -1, row_begin, j -1, col_begin ) + 
+                  arr[i][j]; //
+    
+    return sum[coord];
+}

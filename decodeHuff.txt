@@ -1,0 +1,52 @@
+void decodeHuff ( const string& input, node* curr, node* root, ostringstream& output )
+{
+     if  ( input.length() == 0 ) 
+     {
+        cout << output.str(); return;
+     }
+     if ( (curr == root) && (root == NULL ) )
+         return;
+
+     if ( curr == NULL )
+         return;
+
+     if ( (curr->right == NULL) && ( curr->left == NULL ) )
+     {
+          output << curr->data << " " ;
+          decodeHuff ( input, root, root );
+     }
+     char firstChar = input[0];
+     if ( input[0] - '0' )
+         decodeHuff ( input.substring(1, input.length()), curr.right, root );
+     else
+         decodeHuff ( input.substring(1, input.length() ), curr.left, root );
+
+     return;
+}
+
+  
+void decodeHuff ( node* root, string str )
+{
+     if ( str.length() == 0 ) return;
+     if ( root == null ) return; // parent
+
+     node* parent = root;
+     size_t i = 0;
+     size_t len = str.length();
+
+     while ( i  < len )
+     {
+          if ( str[i++] - '0' )
+             root = root.right;
+          else
+              root  = root.left;
+
+           if ( root->right == NULL && root->left == NULL )
+           {
+                cout << root->data << " ";
+                root = parent;
+                continue;
+           }
+     }
+     cout << "\n";
+}       

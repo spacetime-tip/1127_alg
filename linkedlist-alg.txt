@@ -1,0 +1,345 @@
+bool detectAndRemoveLoop ( node* root )
+{
+     if ( root == null  ) return true;
+     unordered_set<node*> cache_nodes;
+    
+     return ( detectAndRemoveLoopImpl ( root, cache_nodes) );
+}
+
+bool detectAndRemoveLoopImpl ( node *root, unordered_set<node*>& cache )
+{
+     if ( root == null ) return false;
+
+     if ( cache.find(root) != cache.end() ) return true;
+
+     cache.insert(root);
+     if ( detectAndRemoveLoopImpl ( root->next, cache ) )
+     {
+          root->next = NULL;
+          return true;
+     }
+     return false;  
+}
+
+node *randomNode ( node *root )
+{
+     if ( root == null ) return root;
+
+     srand(time(NULL) ); // seed.
+
+     node *orig_root = root; // head !
+     int nitems = 1; // root node
+     while ( root->next != NULL ) { ++nItems; root = root->next; }
+
+     int rand_node = rand() %  nItems;
+     while ( orig_root != null && ( rand_node-- >= 0 ) ) {
+         orig_root = orig_root->next;
+     }
+     return orig_root;
+}
+
+// merge sort on a set of elements [].
+// size of set of elements;
+// mid -- left, right with range of elements adjusted.
+//merge() -- helper[] -- copy the orig for 'range'.
+// operate on helper for 'range' arrange in order adjusting 
+// 'range' indices.
+
+void partitition ( node* root, node** output_head2 )
+{
+ int len = 0;
+  node *head = root;
+    while ( head != null ) { head = head->next; ++len ; }
+   //  head = root;
+
+
+    node *head2 = root;
+    int len2 = len /2;
+    node* prev = head2;
+    while ( len2-- > 0 )
+    {
+       prev = head2;
+       head2 = head2->next;
+    }
+
+     // now I have split-point ..
+    prev->next = NULL;
+    *output_head2 = head2;   
+    return;
+}
+
+void merge_sortLL ( node *root )
+{
+    if ( root == null ) return;
+    node* midH;
+
+    partitition ( root, &midH );   
+    merge_sortLL(root);
+    merge_sortLL(midH);
+    merge_LL( root, midH );
+
+    return;
+}    
+
+void merge_LL( node *head1, node* head2 )
+{
+    node* prev1 = null;  // merge into head1
+    node* prev2 = head2;
+
+    while ( (head1 != null ) && (head2 != null ) )
+    {
+         if ( head1->data >= head2->data )
+         {
+               node*tmp = head2->next;  // becomes new head2.
+               head2->next = head1;
+               if ( prev1 == null )
+                  prev1 = head2;
+               else
+                   prev1->next = head2;
+               head2 = tmp;
+         }  
+         else
+             head1 = head1->next;            
+    }
+    if ( (head1 == NULL ) && ( head2 != NULL ))
+    {
+         head1->next = head2;
+    }
+    return;
+}
+    
+
+node *reverse_LL ( node *root )
+{
+    if ( root->next == null ) return root;
+
+    node* tmp = reverse_LL ( root->next );
+    tmp->next = root;
+    root->next = null;
+    return root;   
+}
+
+void reverse_LL_group ( node *root, int k )
+{
+    node *head = root;
+    node *subH = head;
+    int count = 0;
+
+    while ( head != null ) 
+    {  
+       while ( ( head != null) && ( ++count <= k ) head = head->next;
+
+       node*tmp = head->next;
+       head->next = null;
+        
+       reverse_LL(subH);
+
+       head->next = tmp;
+       subH = tmp;
+
+       count = 0;
+    }
+    return;
+}
+
+void createUnion  ( node* h1, node* h2 )
+{
+   if ( (h1 != null ) && ( h2 == null ) ) return h1;
+   if ( ( h1 == null) && ( h2 != null ) ) return h2;
+   if ( h1 == h2 ) return h1;
+
+   node *head1 = h1;
+   node * head2 = h2;
+    node* prev = null;
+   while ( h1 != null ) 
+   {  
+       while ( h2 != null ) 
+       {
+           if ( h1->data == h2->data )
+           {
+               if ( prev == null )
+                   prev = h1->next;
+               else
+               {
+                  // prev of h1.
+                  prev->next = h1->next;
+                }
+                delete h1; // remove node.
+                h1 = prev;
+           }
+           else
+           {
+               h2 = h2->next;
+           }
+        }
+        h1 = h1->next;
+        h2 = head2;
+   }
+     prev->next = head2;
+   return;
+}
+
+void deleteNode( node** pRoot, node* elem )
+{
+    if ( (elem == null ) || ( root == null ) ) return;
+    node*prev = null;
+    node* root = *pRoot;
+    while ( root != null ) 
+    {
+       if ( root->data == elem->data )
+       {
+           // remove root..
+           if ( prev == null ){
+           
+              *pRoot = root->next;
+              if ( root->next != null ) ++count;
+           }
+           else
+            {
+               prev->next = root->next;
+               ++count;
+            }
+            delete elem;
+            return;
+       }
+       else
+        {
+            prev  = root;
+            root = root->next;
+        }
+    }
+}
+
+void createUnion ( node* h1, node* h2 )
+{
+    node *head = h1;
+    unordered_set<int> l1-set;
+    node* prev = h1;
+    while ( head != null ) { l1-set.insert( head->data) ; prev = head; head = head->next }
+
+    node* h1-tail = prev;
+    head = h2;
+    int count = 0;
+    while ( head != null )
+    {
+        if ( l1-set.find ( head->data ) != l1-set.end() )
+           deleteNode( &h2, head, count );
+        else
+            head = head->next;
+            ++count;
+    }
+    if ( count > 0 ) // h2 still has some items to include with head.
+         prev->next = h2;
+
+}
+
+node* createUnion ( node *h1, node *h2 )
+{
+      // need to get exact '1' set of nodes. with no duplicates.
+
+    unordered_set<node*> u_node;
+    while ( h1 != NULL ) { u_node.insert(h1); h1 = h1->next; }
+    while ( h2 != NULL ) { u_node.insert ( h2 ); h2 = h2->next; }
+
+    // now u_node guarantees that it has '1' set !
+
+    node *nH = NULL;
+    if ( u_node.size() )
+    {
+    	unordered_set<node*>::iterator iter = u_node.begin();
+         nH = *iter;
+         nH->next = NULL;
+         ++iter;
+        while ( iter != u_node.end() )  nH->next = *iter; ++iter;
+
+    }
+    return nH; 
+}
+
+node* intersect ( node *h1, node *h2 (
+{
+     // mode -- and later go through this mode-table to find that is more than 1.
+
+    unordered_map<node*, int> node_mode;
+
+    while ( h1->next != NULL )
+    {
+        if ( node_mode.find(h1) == node_mode.end() )
+              node_mode[h1] = 1;
+        h1 = h1->next;
+    }
+     node* nH = NULL;
+    while ( h2->next != NULL )
+    {
+       if ( node_mode.find(h2) )
+           ;
+       else
+        { 
+             if ( nH == NULL ) {
+                 nH = h2;
+             }
+             else
+                 nH->next = h2;
+
+            nH->next = NULL;
+           
+        }
+         h2 = h2->next;  
+    }
+    return nH;
+}
+
+void intersect ( node *h1, node *h2 )
+{
+       node *newHead = null;  // 10, 4, 5, 10  ;; // 7, 10, 8, 9, 10
+                 
+       node* newTail = null;
+       while ( h1 != null )
+       {
+            node *prev = null;
+            while ( h2 != null )
+            {
+               if ( h1->data == h2->data )
+                {
+                     if ( prev == null )
+                     {
+                         prev = h2->next;
+                         delete h2;
+                         h2 = prev;
+                     }
+                     else
+                     {
+                         prev->next = h2->next;
+                         delete h2;
+                         h2 = prev->next;
+                     }
+                     if  ( newTail->data == h1->data ) // duplicate
+                            continue;
+
+                    if ( newHead == null )
+                    {
+                       newHead = h2; newTail = newHead;
+                    } 
+                    else
+                    {
+                       newTail->next = h2;  
+                       newTail = h2;
+                    }
+             }
+             h1 = h1->next;
+       }
+       newTail->next = NULL;
+       return newHead;
+}
+
+
+
+
+
+
+
+
+
+
+
+
