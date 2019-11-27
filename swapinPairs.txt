@@ -1,0 +1,33 @@
+node *swapInPairs ( node *head )
+{
+      if ( head == NULL ) || ( head && head->next == NULL ) return NULL;
+
+      node *tmp = head->next;
+      Node *nnext =  swapInPairs ( head->next );
+      head->next = nnext;
+      tmp->next = head;
+      head = tmp;
+      return head;      
+}
+
+++ verifying with example data >>>
+
+a->b->c->d->null
+
+head = c;
+tmp = d;
+nnext = NULL;
+
+head->next= nnext;
+tmp->next = head;
+head = tmp;
+return head;
+
+tmp = b;
+head = a;
+nnext = d;
+head->next = nnext (d);
+tmp->next = head  ( a);
+
+head = tmp ( b);
+return head (b) ; // b->a->d->c->null;
