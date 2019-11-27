@@ -1,0 +1,984 @@
+void print_inOrder ( node *root ) // depth traversal.
+{
+   if ( root == NULL ) return;
+
+   // L, C, R
+   print_inOrder( root->left );
+   cout << root->data << " " ;
+   print_inOrder ( root->right );
+   
+   return;
+}
+
+void print_postOrder ( node * root ) // depth traversal
+{
+   if ( root == null ) return;
+   // L, R, C.
+   print_postOrder ( root->left );
+   print_postOrder ( root->right );
+   cout << root->data << " ";
+   
+   return;
+}
+
+void print_preOrder ( node *root ) // depth traversal
+{
+     if ( root == null ) return;
+
+    // C, L, R.
+    cout << root->data << " ";
+    print_preOrder ( root->left );
+    print_preOrder ( root->right );
+
+    return;
+}
+
+void vertical_traversal ( node *root, unordered_map<int, list<node*> >& nodes_collect  )
+{
+    // Gen. Principle -- assign id(s) to left-and right as level-order-traversal
+    // and collect nodes in a container with 'id' as key..
+
+//     unordered_map<int, list<node*> > nodes_collect;
+
+    Queue<pair<int, Node*> > Q;
+    Q.push_back( pair<int, node*>(0, root );
+    // nodes_collect[0] = root;
+    collect ( nodes_collect, root );
+    while ( Q.empty() == false )
+    {
+        pair<int, node*>& ref = Q.front();
+        if  ( ref.left )
+        {
+             pair<int, node*> nc ( ref->first - 1, ref.left );
+             Q.push_back(nc);
+             collect ( nodes_collect, ref->first - 1, ref->left );      
+        }
+        if ( ref.right )
+        {
+            pair<int, node*> nc( ref->first + 1, ref.right );
+            Q.push_back ( nc );
+            collect ( nodes_collect, ref->first + 1, ref.right );
+        }
+   }
+
+    print_vertical  ( nodes_collect );
+    return;
+}
+
+void collect ( unordered_map<int, list<node*> >& coll, int dist, node* n )
+{
+     if ( n == null ) return;
+
+     unordered_map<int, list<node*> >::iterator iter = coll.find(dist);
+     if ( iter == coll.end() )
+           coll[dist] = n;
+     else
+      {
+          list<node*>& ref = iter->second;
+          ref.push_back(n);
+       }
+      return;
+}
+        
+void print_vertical  ( const unordered_map<int, list<node*> > & coll )
+{
+    unordered_map<int, ...>::const_iterator iter = coll.begin();
+
+    for( ; iter != coll.end(); ++iter )
+    {
+        for_each(iter->second.begin(), iter->second.end(), [](const value_type& ref) 
+                         { cout << ref->data << " "; } ); 
+    }
+    return;
+}
+
+void bottom_view( node *root )
+{
+  // run vertical traversal collection and 
+  // then print the last-node collected at each level
+   
+   if ( root == null ) return;
+   unordered_map<int, list<node*> > coll;
+
+   vertical_traversal ( root, coll );
+   unordered_map<int, list<node*> >::const_iterator iter = coll.begin();
+   for ( ; iter != coll.end(); ++iter )
+       cout << iter->second.back() << " ";
+  
+   return;
+}
+
+void *top_view( node *root )
+{
+   // run vertical traversal collection and then print the first-node collected
+   // at each level.
+
+   if ( root == null ) return;
+
+   unordered_map<int, list<node*> > coll;
+   veritical_traversal ( root, coll );
+
+   unordered_map<int, list<node*> >::const_iterator iter = coll.begin();
+   for ( ; iter != coll.end(); ++iter )
+        cout << iter->second.front() << " ";
+
+   return;
+}
+
+void left_view ( node *root )
+{			
+     // collect all items on left beginning with root. And if tree has no left
+      // collect its right.
+
+     unordered_map<int, node*> l_coll;
+     left_view_impl ( root, 0, l_coll);
+
+     print_view ( l_coll ) 
+}
+
+void left_view_impl ( node* root, int dist, unordered_map<int, node*>& coll )
+{
+      if ( root == null ) return;
+
+      if ( coll.find(dist) == coll.end() )
+            coll[dist] = root;
+
+      if ( root->left )
+         left_view_impl  ( root->left, dist + 1, coll );
+      else
+          left_view_impl ( root->right, dist + 1, coll ):
+
+      return;
+}
+
+void right_view ( node *root )
+{
+
+     unordered_map<int, node*> r_coll;
+     right_view_impl  ( root, 0, r_coll );
+
+     print_view ( r_coll );
+}
+
+void right_view_impl ( node *root, int dist, unordered_map<int, node*>& coll )
+{
+    if ( root == null ) return;
+
+    if ( coll.find(dist) == coll.end() )
+       coll[dist] = root;
+
+    if ( root->right )
+         right_view_impl  ( root->right, dist + 1, coll );
+    else
+         right_view_impl ( root->left, dist + 1, coll );
+         
+    return;
+}
+
+long maxPathSum ( node *root )
+{
+    // idea - go all to one side of tree.. and determine
+    // max ( c + l + r, c+l, c + r ) and return that as maxsum at  each level
+
+    long maxSum = numeric_limits<int>::minimum();
+    return ( maxPathSumImpl ( root, 0, maxSum ) );
+}
+
+long maxPathSumImpl ( node* root, int dist, long& maxSumPath )
+{
+     if ( root == null ) return 0L;
+     
+     int l_path = maxPathSumImpl ( root->left, dist + 1, maxSumPath );
+     int r_path = maxPathSumImpl ( root->right, dist + 1, maxSumPath );
+
+     int one_p = l_path + root->data + r_path;
+     int two_p = l_path + root->data;
+     int three_p = r_path + root->data;
+
+     if ( max ( one_p, two_p, three_p ) > maxSumPath )
+           maxSumPath = max(one_p, two_p, three_p);
+
+     return maxSumPath;
+}
+
+vector<int> maxPathNodes ( node *root )
+{
+    vector<int> np;
+    if ( root == null  ) return np;
+    long maxSumPath = numeric_limits<int>::minimum();
+    maxPathNodesImpl ( root, 0, np ); 
+
+    return np;  // will contain the max-path-nodes.
+}
+
+
+long maxPathNodesImpl ( node *root, int dist, long&  maxSumPath, vector<int>& ref )
+{
+    if ( root == null ) return 0L;
+
+
+    int l_path = maxPathNodesImpl ( root, dist + 1, ref );
+    int r_path = maxPathNodesImpl ( root, dist + 1, ref );
+
+     // determine which is maxsumpath
+     int one_p = l_path + root->data + r_path;
+     int two_p = l_path + root->data;
+     int three_p = r_path + root->data;
+
+     if ( max ( one_p, two_p, three_p ) > maxSumPath )
+     {
+           maxSumPath = max(one_p, two_p, three_p);
+    // which is maxSumPath -- and then build set of nodes;
+     // for example - lets say it is one_p;
+    
+        ref.clear(); // what had been decided so far.. and update.
+        ref.push_back ( root->left );   
+        ref.push_back ( root );
+        ref.push_back ( root->right );
+        
+     }
+    return maxSumPath;
+}
+
+
+node* lca_iterative  ( node *root, node* p, node *q )
+{
+    if ( root == null ) return root;
+    
+    if ( ( root == p ) || ( root == q) ) return root;
+    int found = 1; // none identified.
+
+    node *root_orig = root;
+     node* parent = root;
+    Queue<node*> parents;
+
+    node* l_lca = lca_iterative_impl ( root->left );
+    node* r_lca = lca_iterative_impl ( root->right );
+
+    if ( l_lca && r_lca ) return root;
+    return ( l_lca )? root->left : root->right;
+}
+
+node* lca_iterative_impl ( node *root )
+{
+    node* parent  = root;
+     Queue<node*> parents;
+
+    while ( root->left != null )
+    {
+          if ( root == p ) { parents.push(parent); } // found  <<= 1; // found = 10;
+          if ( root == q ) {parents.push(parent); }
+          if ( parents.size() == 2 ) return parents.front();
+
+          parent = root;
+          root = root->left;
+   }
+
+   if ( parents.size() ) return parents.front();
+   return NULL;
+}
+
+
+node* lca_recursive ( node *root, node* p, node* q )
+{
+    if ( root == null ) return root;
+    if ( ( root == p )  || ( root == q ) ) return root;
+
+    node* lca_left = lca_recursive ( root->left, p, q );
+    node* lca_right = lca_recursive ( root->right, p, q );
+
+    if ( lca_left && lca_right ) return root;
+
+   (lca_left ) ? return lca_left : return lca_right;
+
+}
+
+
+// fibonaccii series..
+long  fib_recursive ( unsigned int num, unordered_map<int, int>& cache )
+{
+    
+    if ( (num == 0 ) || ( num == 1 ) ) return 1;
+    if ( cache.find(num) != cache.end() )
+       return cache[num];
+
+    cache[num] = fib_recursive( num - 1 ) + fib_recursive ( num - 2 );
+  
+    return cache[num];		
+}
+
+long fib_iterative ( unsigned int num )
+{
+     if ( (num == 0 ) || (num == 1 ) ) return 1;
+
+     long sum = 0L;
+     int i = 1;
+     while ( i <= num )
+     {
+        sum += i++;
+     }
+     return sum;
+}
+
+
+node* removeNodes( node* root, int length, int& currPathLen )
+{
+    if ( (root == NULL) || (currPathLen >= length)  ) return root;
+
+    if ( (root->right == NULL ) && ( root->left == NULL ) return NULL;
+
+    root->left = removeNodes(root->left, length, currPathLen + 1 );
+    root->right = removeNodes(root->right, length, currPathLen + 1 );
+
+    return root;
+}
+
+
+/++++++++++++++++++++++decode Huffman code represented by binary tree ++++++++++++++/
+
+// idea is the leaf node that has no children contains the character...
+
+void decodeHuff_recursive ( node* root, const string& toDecode )
+{
+      if ( root == NULL ) return;
+      decodeHuffImpl ( root, root, toDecode );
+
+      return;
+}
+
+void decodeHuffImpl ( node* root, node* parent, const string& toDecode )
+{
+     if ( (root == NULL )  || (toDecode.length() == 0 ) ) return;
+
+     if ( (root->left == NULL) && ( root->right == NULL) )
+     {
+          cout << root->data << " ";
+          decodeHuffImpl ( parent, parent, toDecode.substr(1, toDecode.length() );
+          return;
+     }
+     if ( toDecode[0] - '0' ) // 1 go to right.
+          decodeHuffImpl  ( root->right, parent, toDecode.substr(1, toDecode.length() );
+     else
+          decodeHuffImpl ( root->left, parent,  toDecode.substr(1, toDecode.length() );
+
+    return;
+}
+
+void decodeHuff_iterative ( node* root, const string& toDecode )
+{
+    if ( toDeode.length() == 0 ) || ( root == null ) ) return;
+
+    node* parent = root;
+    for ( int i = 0; i < toDecode.length(), root != NULL ; ++i )
+    {
+       if ( (root->left == NULL) && ( root->right == NULL ) )
+       {
+           cout << root->data << ' ' ;
+           root = parent;
+        }
+        if ( toDecode[i] - '0' )
+            root = root->right;
+        else
+            root = root->left;
+    }
+    return;
+}
+
++++++++
+
+void swapInPairs ( node *head) // swap data not reversing linked list..
+{
+     if ( (head == null) || ( head->next == NULL)  ) return ;
+
+
+     int tmp_data = head->next->data;
+    
+      swapInPairs ( head->next )
+     
+     head->next->data = head->data;
+     head->data = tmp_data;
+     
+     return;       
+}
+
++++++
+
+node* reverseLL ( node* head )
+{
+    node* newHead;
+    reverseLL_Impl ( head, &newHead );
+    return newHead;
+}
+
+node* reverseLL_Impl ( node* head, node** newHead )
+{
+    if ( head->next == null )
+    {
+      *newHead = head;
+      return head;
+    }     
+    node* nH = reverseLL_Impl ( head->next );
+    nH->next = head;
+    head->next = NULL;
+
+    return head;      
+}
+
+node* reverse_iterative ( node* head )
+{
+     if ( head == NULL ) return;
+     
+     node* prev = NULL;
+     while ( head != NULL )
+     {
+        node *tmp = head->next;
+        head->next = prev;
+
+        prev = head;
+        head = tmp;
+     }
+     return prev;
+}
+
+// a->b->c->null
+
+bool isCircular ( node *head )
+{
+     if ( (head == null ) &&  ( head->next == null )) return false;
+
+     if ( head == null ) return true;
+
+     node* slow = head;
+     node* fast = head->next->next;
+
+     while ( slow && slow->next )
+     {
+          if ( slow == fast ) return true;
+          slow = slow->next;
+          fast = slow->next;
+     }
+     return false;
+// a->b->c->a
+}
+
+
+bool isOneEdit ( const string& s1, const string& s2 )
+{
+     if ( math::abs(s1.length() - s2.length()) > 1 ) return false;
+
+     int edit_matrix[s1.length()][s2.length()];
+
+     for ( int i = 0; i < s1.length(); ++i )
+           edit_matrix[i][0] = i;
+
+      for ( int i = 0; i < s2.length; ++i )
+            edit_matrix[0][i] = i;
+
+     
+
+     // s1 = battalion
+     // s2 = battle
+    
+     vector<int> cost(3, 0 );  // cost[0] = replace, cost[1] = insert; cost[2] = remove.
+    
+     for ( int i = 0; i <= s1.length(); ++i )
+       for ( int j = 0; j <= s2.length(); ++j )
+    {
+        if ( std::max_element (cost.begin(), cost.end()) > 1 ) return false;
+
+        if ( s1[i] == s2[j] ) continue;
+        if ( (i == 0 ) || ( j == 0 )
+        {
+          if ( s1.length() == s2.length() )
+             cost[0] += 1;
+          else
+          {
+             cost[2] += 1;
+             cost[1] += 1;
+          }
+           
+          continue;
+       }
+          
+        cost[0] += edit_matrix[i-1][j-1] + 1;
+        cost[1] += edit_matrix[i][j-1] + 1;
+        cost[2] += edit_matrix[i-1][j] + 1;
+    }
+    return true;
+}
+
+++++
+long countTriplets ( const vector<int>& num )
+{
+    // i < j < k and i-data < j-data < k-data 
+    
+
+    long count  = 0L;
+
+    for ( int i = 0 ; i < num.size()  - 2: ++i )
+        for ( int j = i + 1; j < num.size() - 1; ++j )
+   {
+      if ( (num.at(i) < num.at(j) ) && ( num.at(j) < num.at(j+1) ) ++count;
+   }
+
+    return count;
+}
+
+++++++++++++++
+
+void swap( char *a, char* b)
+{
+     char tmp = *a;
+     *a = *b;
+     *b = tmp;
+     return;
+}
+
+void reverseStringInPlace ( string& str )
+{
+    if ( str.length() ==  0 ) return;
+
+    int end = str.length() - 1;
+    int start = 0;
+
+    while ( start < end ) swap ( &str[start], &str[end] );
+    return;
+}
+
+void reverseSentence ( string& str )
+{
+     reverseStringInPlace  ( str );
+
+     char delimiter = ' ';
+     size_t begin = 0;
+    
+
+     while ( begin != string::npos )
+     {
+         size_t word = str.find_first_of ( delimiter, begin );
+         if ( word != string::npos )
+         {
+            string word_st ( str.substr(begin, word) );
+            reverseInPlace(st);
+            begin = word_st + 1;
+         }
+     }
+}
+
+++++++
+
+long computeMod( int x, int y, int p ) // pow(x,y) % p.
+{
+    // assuming p > 0;
+    if ( y == 0 ) ) return 1;
+
+     int run_prod = 0; // base
+    // 5 pow 3 ..p = 3 ( 125 % 3 = 2 )
+    while ( y > 0 )  // first starts with y > 2
+    {
+       if ( y == 1 )
+       {
+           run_prod = run_prod + x%p;
+       }
+       else
+       {
+            if ( run_prod == 0 )
+               run_prod = ( x * x) %p;
+            else
+               run_prod = ( run_prod * x ) % p ; // square.. y=2 is covered here.  // 25 % 3 = 1
+             y >>= 1; // 
+       }
+    }
+    return run_prod;
+}
+
+++++++
+
+char firstNonRepetitive ( const string& str )
+{
+     unordered_map<char, int> parse;
+     unordered_map<char, int>::iterator iter;
+     for ( int i= 0; i < str.length(); ++i )
+     {
+         iter = parse.find( str[i] );
+         if ( iter == parse.end() )
+               parse[str[i] = 1;
+         else
+             parse.erase(iter);
+     }
+
+     int min = numeric_limits<int>::maximum();
+
+        // now find the lowest-position of string that has 'non-repetitive' character.
+     for_each( parse.begin(), parse.end(), [](const value_type& ref ) {
+              if ( iter->second < min ) 
+                   min = iter->second; } );
+
+    return min; // 
+}
+
+++++++
+// stream of numbers ...return median median.
+
+class MinOrder
+{
+    public:
+        bool operator()( int lhs, int rhs )
+        {
+            return ( rhs < lhs );
+        }
+};
+class FindMedian
+{
+     priority_queue<int, vector<int>, MinOrder> min_pri;
+     priority_queue<int, vector<int> > max_pri;
+
+     int getSmallestMax()
+     {
+          // convert max_pri into min_pri.
+         priority_queue<int, vector<int>, MinOrder > toMin ( max_pri.begin(), max_pri.end() );
+         
+         return toMin.top();
+     }
+
+     int removeSmallestMax()
+     {
+         // convert max_pri into min_pri.
+         priority_queue<int, vector<int>, MinOrder > toMin ( max_pri.begin(), max_pri.end() );
+         int rc = toMin.top();
+         toMin.pop();
+         priority_queue<int> new_max_pri(toMin.begin(), toMin.end() );
+         max_pri = new_max_pri;
+         return rc;
+     }
+
+     void adjust ( priority_queue<> min, priority_queue<> max )
+     {
+         int diff_sz = pri_min.size() - pri_max.size() ;
+         
+         if ( (diff_sz == 0 ) || (diff_sz == -1) || ( diff_sz == 1 ) ) return;
+
+         if ( diff_sz < 0 )
+         {
+                 // min is higher.
+            while ( pri_min.size() > pri_max.size + 1 ) { pri_max.push(pri_min.top()); pri_min.pop() ; }
+         }
+             
+
+         // pri_max is higher
+         while ( pri_max.size() > pri_min.size() + 1 ) 
+         {
+            pri_min.push( removeSmallestMax() );    
+         }
+         return;
+     }
+
+     public:
+     long operator()( int input ) 
+     {
+           int min_sz = min_pri.size();
+           int max_sz = max_pri.size();
+
+           if ( max_sz ==  min_sz )
+           {
+                 int max_small = getSmallestMax();
+                 min_pri.push( input );
+                 return ( (max_small + min_pri.top() ) / 2 );  // now min is left higher..
+           }
+           else
+           {
+                 // ideally, min.top is current median
+                 if ( min_pri.top() > input )
+                 {
+                     int small = min_pri.top();
+                     min_pri.pop();
+                     min_pri.push(input);
+                     max_pri.push(small);    
+                 }
+                 else 
+                     max_pri.push(input);   // now max is left higher..
+
+                adjust(min_pri, max_pri ); // ensures that size distance is '1'.
+
+                return ( getSmallestMax() + min_pri.top() ) / 2 ); // now both are equal
+           }
+        
+         }
+};
+++++++++++++++++++
+
+node* getKthFromTail( node* head, int& k )
+{
+    if ( head == null ) { return head; }
+     
+    getKthKthFromTail ( head->next, k );
+    if ( --k == 0 )
+        return head;
+    
+    return NULL;
+}
+
++++
+
+std::unique_lock<std::mutex> -- member methods ; lock() and unlock();
+;
+mutex-guard;
+class MutexGuard
+{
+     std::unique_lock<std::mutex> ref;
+     MutexGuard ( std::mutex& m  ) : ref(m) {
+     ref.lock();
+     }
+     ~MutexGuard() { ref.unlock() ; }
+};
+
+
+template<class T> SmartPtr
+{
+     unsigned int count;
+     std::mutex m;
+     T *ptr;
+     public:
+        SmartPtr( T *input ) : ptr(input ) { MutexGuard lock(m); ++count }
+        ~SmartPtr () 
+        {
+              MutexGuard lock(m);
+              if ( --count == 0 ) delete ptr;
+        }
+        T* operator->() {
+            return ptr;
+        }
+
+         T& operator*()  { return *ptr; }
+         T& operator=( SmartPtr& rhs )
+         {
+             if ( *this == rhs ) return *this;
+             MutexGuard lock(rhs.m);
+             ptr = rhs.ptr;
+             count = ++rhs.count;
+             return *this;
+         }
+
+        // copy constructor
+         SmartPtr( const SmartPtr& rhs )
+         {
+              MutexGuard lock(rhs.m);
+              ptr = rhs.ptr;
+              count = ++rhs.count;
+         }
+};
+
+template<class T>
+class ReaderWriterQ
+{
+      Queue<T>  Q;
+      atomic<int> readers;
+      atomic<int> writer;
+
+      std::condition_variable cv;
+      std::mutex;
+
+      private:
+      bool getReadLock()
+      {
+           std::unique_lock<std::mutex> lk(m);
+           cv.wait(lk, []{ return writer == 0 ; } );   // wait_until : time-waited option..
+
+           ++readers;
+           lk.unlock();
+           cv.notifyAll()
+           return true;
+      }
+      bool acquireWriteLock()
+      {
+         return upgradeWriteLock ( 0 );
+      }
+      bool upgradeWriteLock(int def_arg=1)
+      {
+         if ( writer == self() ) return true;
+         std::unique_lock<std::mutex> lk(m);
+         if ( writer !=0 ) 
+         {
+             // another thread holding...akin to reader wait for writer to release.
+            
+            cv.wait ( lk, [] { return (writer == 0) && (readers == 0 ) ; } )
+         
+         }
+         else {
+              cv.wait( lk, []{ return readers == 0; } ); // or wait_until : time-waited option..
+         }
+          if ( def_arg )
+              --reader;
+
+         writer == thread::self();  // save thread-id.
+         lk.unlock();
+         cv.notifyOne();
+         return true;
+      }
+
+      bool  releaseReader()
+      {
+         std::unique_lock<std::mutex> lk(m);
+         cv.wait ( lk, []{return writer == 0 ; } ); // wait_until if not acquired, return false.
+         --reader;
+         lk.unlock();
+         cv.notifyOne();
+         return true;
+      }
+
+      bool releaseWriter()
+      {
+          std::unique_lock<std::mutex> lk(m); // at this point readers already all are '0'.
+          writer = 0;
+         lk.unlock();
+         cv.notifyAll();
+         return true;
+      }    
+      public: 
+              // interface -- 
+          void insert( T& ref ) { acquireWriter() ; Q.push_back(ref); releaseWriter(); }
+          bool getNext( T& ref ) {
+             if ( Q.size() == 0 ) return false;
+             acquireReader();
+             ref = Q.front();
+             upgradeToWriter();
+             Q.pop_front();
+             releaseWriter();
+             return true;
+        }
+};
+
++++++++++
+
+states - incoming [ idle, answering(incoming_event), answered( intersect capab), wait_release_complete(originating release), idle( received remote releasecomplete ].
+       -- outgoing [ idle, offer, ringing, answer, release, releasecomplte ].
+
+
+--->offer ( with full capab)
+<--- answer  ( with intersect capab )
+<=====> media establish.
+-->release .
+<--- releasecomplete .
+
++++++++++++
+
+vector<string> getAutoFill( const string& str )
+{
+     vector<string> result;
+     if ( str.length() == 0 ) return result;
+     return Trie::instance()->autoFill ( str ); // , result );
+}
+
+class TrieNode
+{
+    char data;
+   private:
+      unordered_map<char, TrieNode*>  nodes;
+      vector<string> autoFill(const string& str );   
+
+    friend class Trie;
+};
+
+class Trie
+{
+    TrieNode trieNode;
+    public:
+      vector<string> autoFill ( const string& str )
+      {
+               // pick first node to trigger recursion.
+          return trieNode.nodes[str[0]]->autoFillImpl( str ); // nodes[str[0]]->autoFill ( str );
+      }        
+};
+
+// ab
+// ac;
+// adef;
+
+vector<string> 
+TrieNode::autoFill( const string& str)
+{ 
+     vector<string> output;
+     if ( str.length() == 0 ) { output.push_back(""); return output; }  // reached the end leaf in trie. so load character.
+
+     char firstChar = str[0];
+     for ( int k = nodes.size(); k >= 0; --k )
+     {
+          vector<string> getWords = node->autoFill(str.substr(1, str.length() ) );
+          for_each ( getWords.begin(), getWords.end(), [](const value_type& ref) {
+                    string word(firstChar);
+                    word.append ( ref );
+                    output.push_back(word);
+                   } );
+     }
+     return output;
+}
+
+
+      
+// output construction - 1st round is 'b'.
+// 2nd round is 'ab'.
+
+
+
+void printSorted ( const string& str ) // numerical, space, alpha -- ascii char.
+{
+     if ( str.length() == 0 ) return ; // nothing to print.
+
+
+     int k = 0;
+     priority_queue<string> result;
+     while ( (str[k] != '\0' )
+     {
+        while ( (str[k] != '\0' ) && (isspace(str[k]) || isalpha(str[k])) ) ++k;  //ab
+
+	if ( k == string::npos ) return ; // nothing to do.
+
+             // hit numerical char
+        // as digit here is just digit and not integer value..
+       
+        long len = getDigit( str.substr(k, str.length(), result);
+        k += len;
+     }
+
+//     std::sort( result.begin(), result.end() ); 
+    // std::for_each ( result.begin(), result.end(), [](const value_type& ref ) {
+      //                    cout << ref << "\n"; } );
+       while ( result.size() )
+       {
+            cout << result.front() << "\n"; result.pop_front();
+       }
+}
+
+long getDigit ( const string& str, priority_queue<string>& result )
+{
+       if ( str.length() == 0 ) return 0;
+
+       int k = 0;
+       string numeric;
+       while ( (str[k] ! = '\0' ) && ( isDigit(str[k]) )
+             numeric += str[k++];
+
+       result.push_back(numeric);
+       return numeric.length();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

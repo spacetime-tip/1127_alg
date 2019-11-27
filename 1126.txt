@@ -1,0 +1,370 @@
+// remove duplicates from linked list.
+
+// ALG -- maintain an intermediate set of nodes as LL is being traversed.
+// And as each node is checked if already in set - remove duplicate.
+// this results with later true 'duplicate' removed.
+// output: return node of 'new head'.
+
+node *removeDup ( node *root )
+{ 
+// toverify: 4, 4, 3, 2, 2 , <null>
+
+    if ( (root == null) || ( root && (root->next == null)) ) return root;
+
+    node* nH = root;
+    node* tail = nH;
+
+    unordered_set<node*> exists;
+    while ( root != null )
+    {
+       if ( exists.find(root) != exists.end() )
+       {
+           tail->next = root->next;
+       }
+       else
+            tail->next = root;
+       root = root->next;
+    }
+    tail->next = NULL;
+    return nH;
+}
+
+
+/// Given a root of tree. 
+// create linked lists of each level.
+
+// ALG. level order traversal,  carrying level information..
+// keep track of curr-level and when start of new-level is seen
+// update curr-level and begin start of new linked-list...
+// output: unordered_map<level, node*> ---
+
+class TreeToLL 
+{
+    unordered_map<int, list<node*> > output_ll;
+    void addToLL ( int level, tnode* toadd );
+    public:
+        unordered_map<int, list<node*> > createLL(tnode * );
+         // vector< pair<int, list<node*> > alternative data structure ...
+        
+};
+void TreeToLL::addToLL ( int currLevel, tnode* toadd )
+{
+    if ( output_ll.find(currLevel) == output_ll.end() )
+    {
+         list<node*> level_begin;
+         output_ll[currLevel  = level_begin;
+    }
+
+    output_ll[currLevel]->second.push_back( new LL-node(toadd) );
+
+    return;
+}
+
+unordered_map<int, node*> TreeToLL::createLL( tnode *root )
+{
+     Queue<pair<int, tnode*> > q;
+
+     q.push_back(pair<int, tnode*>( currLevel, root) );
+
+     while (q.empty() == false )
+     {
+           pair<int, node*> ref = q.front();                     
+           q.pop_front();
+
+           addToLL (ref->first, ref->second);
+
+           if ( ref->second->left )
+                 q.push_back ( pair<int, tnode*>( ref->first + 1, ref->second->left) );
+           if ( ref->second->right )
+                 q.push_back ( pair<int, tnode*>( ref->first + 1, ref->second->right) );
+a
+     }
+            // tree traveresed. ll-built while traversing. data-set for return is ready !
+     return output_ll;  
+}
+
+/// Q. sort a stack in ascending order with top ( highest value ).
+
+// ALG : intermediary stack... .
+
+stack<int>  sortStack ( stack<int>& s1 )
+{
+   //  stack<int> s1; // to be sorted.
+    stack<int> s2 ; // helper.
+
+    while ( s1.empty()  == false )
+    {
+       while ( s2.top() < s1.top() ) {s2.push(s1.top() ); s1.pop(): }
+       int tmp  = s1.top(); s1.pop();
+       while ( s2.top() < tmp ) { s1.push ( s2.top() ); s2.pop(); }
+       s2.push ( tmp );
+    }
+    return s2;
+}
+
+// Hanoi towers -- three towers.. and stack and smaller should always be on top.
+// move from orig -->dest.
+// let's say n = 2. 
+// origin move n-1 to intermediate.
+// origin.top() to dest();
+// helper move n-1 to destination .
+// e.g. only 2 disks --
+
+ // 1 from origin ->helper ( this is dest );
+  // last from origin --> dest.
+  // helper ->dest.
+
+ // 3 elements in origin... 1 ->to help...
+
+void moveDisks ( int n, stack<disk>& origin, stack<disk>& help, stack<disk>& dest )
+{
+      if ( n  == 0 ) return;
+
+      moveDisks ( n -1, origin, dest, help );
+      dest.push ( origin.top() );
+      origin.pop();
+      moveDisks  (n-1, help, origin, dest );
+}
+
+// is binary tree balanced... height of left and right at any node should not be greater than
+// diff of height - 1 
+// post-order traversal.
+
+bool isBTBalanced ( tnode* root )
+{
+     if ( root == null ) return true;
+
+     int lH = getHeight ( root->left );
+     int rH = getHeight ( root->right );
+
+     if ( Math.abs(lH - rH ) <= 1 ) 
+         return true;
+
+     return false;
+}
+
+int getHeight ( tnode* root )
+{
+     if ( root == null ) return 0;
+
+     int lH = getHeight ( root->left );
+     int rH = getHeight ( root->right );
+   
+     return ( max ( lH, rH )  + 1 );
+}
+
+// is there a route between 2 Nodes?
+// input: Data structure - Directed Graph and a start-node.
+// either by DFS or BFS recurse to see if any node is 'dest-node'. And if 'dest' is seen
+// during traversal then return true ( yes ) , else return false.
+
+
+class IsRouteAvail 
+{
+     const Graph& G;
+     
+     unordered_map<node, State> visited.
+
+     bool isdfsSearch ( int start_node, int dest_node );
+     public:
+     IsRouteAvail ( const Graph& input) :
+                  G(input) {
+          
+          unordered_map<node, State> initialize( G.vertices.size(), NOT_VISITED );
+          visited.swap(initialize);
+      }
+      bool operator() (int start_node, int dest_node );
+
+};
+bool IsRouteAvail::operator() ( int start_node, int dest_node )
+{
+    if ( start_node == dest_node ) return true;
+
+    
+    return dfsSearch (  start_node, dest_node );
+}
+
+bool IsRouteAvail::dfsSearch ( int start, int dest )
+{
+   if ( visited[start] == NOT_VISITED )
+   {
+          visited[start] = VISITING;
+          // for each of neighbhors of start -- check if dest is its node.. 
+          // if match for dest-node-- return true.. otherwise.. dfsearch on each neighbor
+
+           vector<int>& neighbors = edges[start];
+           for_each ( neighbors.begin(), neighbors.end(), [](const value_type& ref ){
+                        if ( ref == dest ) return true;
+                        else
+                             return dfsSearch ( ref, dest ); } );
+
+           visited[start] = VISITED;
+   }
+   return false;
+}
+
+// given sorted array, create binary tree.
+//[ 1 , 2, 3, 4, 5, 6,  8 ] -- example.
+
+// ALG -- akin to binary search -- mid point as root and then build left-tree and right-tree.
+
+class node; //  forward declaration
+
+class node
+{
+    int data;
+    node* left;
+    node* right;    
+    public:
+      node( int val ) : data(val), left(null), right(null){}
+      ~node(){ delete left; delete right; }
+};
+
+node* createBST ( int arr[], size_t sz )
+{
+    if ( sz == 0 ) return null;
+    
+    return buildBST( 0, sz - 1, arr );
+}
+
+node* buildBST ( int start, int end, int arr[] )
+{
+    if ( start > end ) return NULL;
+
+    int mid = (start + end ) /2;
+    node* n = new node ( arr[mid] );
+    n->left = buildBST (  start, mid, arr );
+    n->right = buildBST ( mid + 1, end, arr );
+
+    return n; 
+}
+
+
+// remove duplicates in a sorted array .. 
+// 1, 1, 2, 3, 4, 4, 5
+// ALG - ( inplace : will involve memory moves and return 'sz' of arr that is now valid. ), 
+// (with space complexity introduced, parse and rebuild array ).
+
+
+int removeDup ( int arr[], size_t sz ) // inplace -- ? what should happen to remainder of memory? .
+{
+
+     int k = 0;
+
+     while ( k < sz )
+     {    
+        while ( (k+1 < sz ) && ( arr[k] != arr[k+1] ) ) ++k;
+
+        // k == k + 1;
+        // [1, 1 ]
+        if ( k+2 < sz )
+           memmove( &arr[k+1], &arr[k+2], sz - 1);
+           
+        sz -= 1;
+     }
+     return sz;
+}
+
+// out of place... return set.
+vector<int> removeDup ( int arr[], size_t sz )
+{
+    vector<int> result;
+    int k = 0;
+    while ( (k + 1 < sz ) && (arr[k] != arr[k+1] ) ) 
+    {
+         result.push_back  ( arr[k++] );
+    }
+
+     if ( result.back() != arr[k] )
+         result.push_back(arr[k]);
+
+     return result;
+}
+
+
+++++
+Whatever is in front of you, that appears to be an opposition is really an opportunity. 
+My prayer is that you will rise to the challenge and know that you have the divine favor of God. 
+You don't have to be apart of the clique, you were designed to be different. 
+Your heart of gold and your success will make room for you at the table. 
+When you have been called simply RISE.  --->Brianna Roberts(Parris Preston )
+++++
+
+// Get Count of sequence that sums to a value. where i < j < k ...
+
+int getCountOfThreeMatch ( const vector<int>& ref, int val )
+{
+     if ( ref.size() < 3 ) return 0;
+     int count = 0;
+
+     for ( int i = 0; i < ref.size() - 2 ; ++i )
+     {
+         for ( int j = i + 1; j < ref.size() - 1; ++j )
+         {
+             if ( (ref.at(i) + ref.at(j) + ref.at(j+1)) == val )
+                 ++count;
+         }
+     }
+     return count;     // O(N ^ 2 );
+}
+
+// if size is very high --? -- sort -- mergesort ( O(NLogN ) ) 
+
+// sort array of strings so all anagrams sit next to each other.
+// ALG - data structure, <key>, <list of anagrams>.., output : return these anagrams.
+
+vector<string> sortAsAnagrams( const vector<string>& input )
+{
+     vector<string> output;
+     if ( input.size() == 0 ) return output;
+
+     unordered_map<string, vector<string> > parse_input;
+     unordered_map<string, vector<string> >::iterator iter;
+
+     for ( int k = 0; k < input.size(); ++k )
+     {
+         string str (input.at(k) );
+         if ( (iter = parse_input.find( sort (str)) != parse_input.end() )
+                 iter->second.push_back(input.at(k) );
+         else
+         {
+              vector<string> res;
+              res.push_back ( input.at(k) );
+              parse_input[sort(str)] = res;    
+         }
+     }
+    for_each ( parse_input.begin(), parse_input.end(), [](const value_type& ref ) {
+               output.insert ( output.end(), ref->second.begin(), ref->second.end() ) } );
+    
+    return output;
+}
+
+// you are given 2 sorted arrays, A and B where A has large enough buffer to hold B. 
+// merge in sorted manner.
+
+// ALG : A has enough buffer... so merge operation from tail elements of 'A' and 'B' and write to end of 'A'
+
+void merge ( int A[], int B[], size_t a_sz, size_t b_sz )
+{
+      if  ( b_sz == 0 ) return; // nothing to do !
+
+      int b_end = b_sz  - 1;
+      int a_end = a_sz  - 1;
+      int a_write = ( a_sz + b_sz  - 1 );
+
+      while ( (b_end >= 0 ) && ( a_end >=0 ) )
+      {
+            if ( b[b_end] > a[a_end] ) { a[a_write--] = b[b_end--] ; }
+            else { a[a_write--] = a[a_end--]; }
+      }
+      while ( b_end != 0 )
+      {
+                // copy remaining of 'b' into 'a'.. 
+           a[a_write--] = b[b_end--];    
+      }
+         // no need to check for 'a' as 'a' is already sorted and in 'a'.
+         // so all merged.
+      return;
+}
+
+
