@@ -1,0 +1,39 @@
+// Example program
+#include <iostream>
+#include <string>
+#include <cmath>
+
+int shortest ( string[] words, string word1, string word2 )
+{
+    int min = MAX_VALUE;
+    int pos_word1 =  -1;
+    int pos_word2 = -1;
+    for ( int i = 0; i < words.length(); ++i )
+    {
+         if ( words[i] == word1 )
+         {
+             pos_word1 = i;
+             if ( pos_word2 > 0  && ( min > abs(pos_word1 - pos_word2))
+             {
+                 min = abs(pos_word1 - pos_word2 );
+             }
+         }
+         else if ( words[i] = word2 )
+         {
+             pos_word2 = i;
+             if ( pos_word1 > 0  && ( min > abs(pos_word1 - pos_word2))
+             {
+                 min = abs(pos_word1 - pos_word2 );
+             }
+         }
+    }
+    return min;
+}
+
+int main()
+{
+  std::string name;
+  std::cout << "What is your name? ";
+  getline (std::cin, name);
+  std::cout << "Hello, " << name << "!\n";
+}

@@ -1,0 +1,67 @@
+Sample Problem
+Write a function to return if two words are exactly "one edit" away, where an edit is:
+Inserting one character anywhere in the word (including at the beginning and end)
+Removing one character
+Replacing exactly one character
+
+
+bool oneEdit ( const std::string& s1, const std::string& s2 )
+{
+     if (  (abs ( s1.length()  - s2.length) > 1 ) ) )
+          return false;
+
+      int editCount = 0;
+      for ( i =  0; i < min ( s1.length(), s2.length() ); ++i )
+      {
+            if ( (s1[i] != s2[i] ) && ( ++editCount > 1 )
+            {
+                 return false;
+            }        
+      }
+         // all char(s) matched.
+      // check for remove ( abs() -- already verified )    
+      return true;          
+}
+
+bool isOneEdit ( const string& s1, const string& s2 )
+{
+     int len1 = s1.length();
+     int len2 = s2.length();
+    
+     if ( abs( len1 - len2 ) > 1 ) return false;
+
+     // determine cost to convert from s1->s2 against replace, insert, remove
+     // while trying to determine cost if cost is greater than 1.. 
+     // then this function will return... false.
+     int minDist[len1][len2];
+
+     for ( int j = 1; j < len1; ++j )
+          minDist[j][0] = j;  
+     
+     for (  j = 1; j < len2; ++k )
+             minDist[0][j] = j;
+
+// O(n + m ) 
+
+     int cost = 1;
+O(
+     for ( int i = 1; i < len1; ++i )
+        for ( int j = 1; j < len2; ++j )
+     {
+         if ( s[i] == s[j] ) cost = 0;
+
+          replace_cost = minDist[i-1][j-1] + cost;
+          insert_cost = minDist[i][j-i] + 1;
+          remove_cost = minDist[i-1][j] + 1;
+          if ( maximum(replace_cost, insert_cost, remove_cost) > 1 )
+                return false;         
+     }
+
+// return true only if its '1' not ' no edit at all'
+     
+     (minimum ( replace_cost, insert_cost, remove_cost) == 0 ) ? return false : return true;
+                   
+}
+
+
+

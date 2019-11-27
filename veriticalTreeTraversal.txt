@@ -1,0 +1,103 @@
+void print_inOrder ( node *root )
+{
+    // L.C.R
+
+    if ( root == null ) return ;
+
+    print_inOrder ( root->left );
+    cout << "root->data" );
+    
+    print_inOrder ( root->right );
+
+    return;
+}
+
+print_postOrder ( node *root )
+{
+     if ( root == null ) return;
+
+     // L, R, C
+     print_postOrder ( root->left );
+     print_postOrder ( root->right );
+
+cout << "root->data" << "\n";
+    return;
+     
+}
+
+print_preOrder ( node *root )
+{
+     if ( root == null ) return;
+   // C, L, R
+      cout << "root->data " << "\n";
+      print_preOrder ( root->left );
+      print_preOrder ( root->right );
+}
+
+
+void collect ( int d, node* n, unordered_map<int, vector<node*>> & nc )
+{
+     unordered_map<int, node*>::iterator iter = nc.find ( d );
+     if ( iter == nc.end() )
+     {
+          vector<node*> vec;
+          vec.push_back( n );
+          nc[d] = vec;     
+     }
+     else
+     {
+          vector<node*>& ref = iter->second;
+          ref.push_back( n );
+      }
+      return;
+}
+
+void print ( const unordered_map<int, vector<node*>& nc )
+{
+       stringstream str; 
+       vector<node*>& each_dist;
+       int i =  0;
+
+       for ( item : nc )
+       {
+       while ( i < each_dist.size() )
+             str << each_dist.at(i++) << " "
+
+       str << "\n"
+
+       }
+       cout << str.str();
+}
+
+void vertical_traversal ( node * root ) 
+{
+      // for each node -- compute distance from level =0 ( root)
+      // assign value -- left = hd - 1 ; right = hd + 1;
+
+      Queue<pair<int, node*> > q;
+      int distance =0;
+      q.push ( pair<int, node*>( level, root ));
+      
+      unordered_map<int, node*> nc;
+
+      while ( q.empty )
+      {
+              pair<int, node *> top = q.front();
+              if ( top->left )
+              {
+                    pair<int, node*> l( top.first - 1, top->left);
+                    q.push ( l );
+                    collect ( top.first - 1, top->left, nc );
+              }
+               if ( top->right )
+               {
+                    pair<int, node*> r( top.first + 1, top->left);
+                    q.push ( r );
+                    collect ( top.first + 1, top->left, nc );
+               }
+               q.pop();
+      }
+            // traversed the tree and collected nodes
+
+      print ( nc );
+}

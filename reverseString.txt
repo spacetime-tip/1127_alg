@@ -1,0 +1,51 @@
+reverseString ( char *s )
+{
+     reverseInPlace (s );
+     
+       // reverse the entire string.
+        // now reverse the words of the string.
+
+     string str(s);
+     char delimiter = ' ';
+     size_t begin = 0;
+     size_t pos = str.find_first_of ( delimiter );
+     while ( pos != string::npos )
+     {
+           string word = str.substr ( begin, pos );
+           reverseInPlace ( word );
+           begin = pos + 1;
+           pos = str.find_first_of ( delimiter, begin );
+     }
+ 
+ 
+}
+
+void swap ( char& s, char& d )
+{
+     char tmp = s;
+     s = d;
+     d = s;
+     return;
+}
+
+void reverseInPlace ( std::string& word )
+{
+     int begin = 0;
+     int end = word.length();
+
+     while ( begin < end )  swap( s[begin++], s[end--] );
+
+     return;
+}
+
+void reverseInPlace ( char *s )
+{
+     char *begin = s;
+     char *end = strlen(s);
+     while ( begin < end ) 
+     {
+           char tmp = *begin;
+           *end-- = *begin++;
+     }
+     return;
+}

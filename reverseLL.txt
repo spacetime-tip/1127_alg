@@ -1,0 +1,25 @@
+node* reverseLinkedList ( node *head )
+{
+    if ( head == null ) return head;
+
+    node* prev = null;
+    while ( head->next != null )
+    {
+       node *tmp = head->next;
+       head->next = prev;
+       prev = head;
+       head = tmp;   
+    }
+    return head;
+}
+
+node *reverseLL_recursive ( node *head )
+{
+    if ( head->next == null ) return head;
+    
+     node * r1 = revsereLL_recursive ( head->next );
+     r1->next = head;
+     head->next = NULL;
+     return head;
+    
+}

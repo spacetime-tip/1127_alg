@@ -1,0 +1,36 @@
+class MinOrder
+{
+    public: 
+      bool operator() ( int lhs, int rhs )
+      {
+           if ( lhs > rhs ) return true;
+           return false;
+      }
+};
+
+int findKthsmallest ( int arr[], size_t sz )
+{
+  //brute forcs -- sort the arry.. select the k-1 index and return the value.}
+
+  priority_queue<int, vector<int>, MinOrder> queue;
+ // min operator be a reverse operation.. ideally it lhs < rhs ( max)
+ // lhs > rhs .. this basically will always have min-value at the top of
+ // my pri-queue.
+
+// 7, 10, 4, 3, 20, 15 -- O(n);  // keep the size as 'k'
+// 7, 10, 4 ( 10, 7, 4 ) // 3 -- ( 7, 4, 3), // 20 - dropped to floor.
+// 15 -- drop to floor..
+
+  for ( int i= 0; i < sz - 1; ++i )
+  {
+     if ( pq.size() == k ) && ( pq.top() > arr[i] )
+     {
+            pq.pop();
+            pq.push( arr[i] );
+     }      
+  } 
+
+   return pq.top();
+}   // O(n) time complexity with O(k) space complexity..
+  
+
